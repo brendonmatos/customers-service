@@ -52,10 +52,10 @@ describe('AppController (e2e)', () => {
     const getTest = await request(app.getHttpServer())
       .get('/customers/' + createTest.body.id)
 
+
     expect(getTest.status).toBe(200);
-    expect(getTest.body).toHaveLength(1);
-    expect(getTest.body[0]).toHaveProperty('name', 'John Doe');
-    expect(getTest.body[0]).toHaveProperty('document', '12345678910');
+    expect(getTest.body).toHaveProperty('name', 'John Doe');
+    expect(getTest.body).toHaveProperty('document', '12345678910');
   })
 
 
