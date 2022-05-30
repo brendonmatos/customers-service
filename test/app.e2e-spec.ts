@@ -1,7 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
-import { AppModule } from './../src/app.module';
+import { AppModule } from '../src/app.module';
+import { AuthService, AuthServiceSymbol } from '../src/customer/auth-service';
 
 
 const uuidRegexExp = /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/gi;
@@ -27,8 +28,14 @@ describe('AppController (e2e)', () => {
   });
 
   it('/customers (POST)', async () => {
+
+    const authService = app.get(AuthServiceSymbol) as AuthService
+
+    const token = await authService.getToken()
+
     const test = await request(app.getHttpServer())
       .post('/customers')
+      .auth(token, { type: 'bearer' })
       .send({
         name: 'John Doe',
         document: '12345678910',
@@ -42,8 +49,11 @@ describe('AppController (e2e)', () => {
   })
 
   it('/customers/:id (GET)', async () => {
+    const authService = app.get(AuthServiceSymbol) as AuthService
+    const token = await authService.getToken()
     const createTest = await request(app.getHttpServer())
       .post('/customers')
+      .auth(token, { type: 'bearer' })
       .send({
         name: 'John Doe',
         document: '12345678910',
@@ -51,7 +61,6 @@ describe('AppController (e2e)', () => {
 
     const getTest = await request(app.getHttpServer())
       .get('/customers/' + createTest.body.id)
-
 
     expect(getTest.status).toBe(200);
     expect(getTest.body).toHaveProperty('name', 'John Doe');
