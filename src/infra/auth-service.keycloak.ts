@@ -1,50 +1,87 @@
+import { Injectable } from "@nestjs/common";
+import { ConfigModule, ConfigService } from "@nestjs/config";
 import Axios, { AxiosInstance } from "axios";
+import { config } from "process";
 import { AuthService } from "../customer/auth-service";
 
+
+type KeycloakIntrospectionResponse = {
+    exp:                number;
+    iat:                number;
+    jti:                string;
+    iss:                string;
+    sub:                string;
+    typ:                string;
+    azp:                string;
+    preferred_username: string;
+    email_verified:     boolean;
+    acr:                string;
+    resource_access:    ResourceAccess;
+    scope:              string;
+    clientId:           string;
+    clientHost:         string;
+    clientAddress:      string;
+    client_id:          string;
+    username:           string;
+    active:             boolean;
+}
+export type ResourceAccess = {
+    customers: Customers;
+}
+
+export type Customers = {
+    roles: null[];
+}
+
+@Injectable()
 export class AuthServiceKeycloak implements AuthService {
     httpClient: AxiosInstance;
 
-    constructor() {
+    constructor(
+        private configService: ConfigService
+    ) {
         this.httpClient = Axios.create({
-            baseURL: 'https://accounts.seguros.vitta.com.br/'
+            baseURL: this.configService.get('SSO_KEYCLOAK_URL'),
         })
     }
 
     async validateToken(token: string): Promise<boolean> {
-        // try {
-        //     const response = await this.httpClient.get('/auth/realms/careers/protocol/openid-connect/userinfo', {
-        //         headers: {
-        //             'Authorization': `Bearer ${token}`
-        //         }
-        //     })
 
-        //     console.log(response.data)
-        //     const userInfo = response.data
-        //     return userInfo.active
-        // } catch (error) {
-        //     console.log(error.response.data)
-        //     return false
-        // }
+        const requestParams = new URLSearchParams({
+            'client_id': this.configService.get('SSO_KEYCLOAK_CLIENT_ID'),
+            'client_secret': this.configService.get('SSO_KEYCLOAK_CLIENT_SECRET'),
+            'token': token,
+        });
 
-        return true
+        const response = await this.httpClient.post<KeycloakIntrospectionResponse>('/token/introspect', requestParams, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        })
 
+        const userInfo = response.data
+        return userInfo.active
     }
+
     async getToken(): Promise<string> {
-        const userName = 'brendonferreiradm@gmail.com'
+        const userName = this.configService.get('SSO_KEYCLOAK_USERNAME')
         const password = Buffer.from(userName).toString('base64')
 
         const requestParams = new URLSearchParams({
             'grant_type': 'client_credentials',
-            'client_id': 'customers',
-            'client_secret': '453000f7-47a0-4489-bc47-891c742650e2',
+            'client_id': this.configService.get('SSO_KEYCLOAK_CLIENT_ID'),
+            'client_secret': this.configService.get('SSO_KEYCLOAK_CLIENT_SECRET'),
             'username': userName,
             'password': password,
             'scope': 'openid',
         })
 
-        const response = await this.httpClient.post('/auth/realms/careers/protocol/openid-connect/token', requestParams.toString(), {
+        const response = await this.httpClient.post('/token', requestParams, {
             headers: { 'content-type': 'application/x-www-form-urlencoded' }
         })
+
+        console.log(response.data)
 
         const token = response.data.access_token
         return token

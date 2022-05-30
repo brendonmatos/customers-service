@@ -2,7 +2,14 @@ import { Inject } from "@nestjs/common";
 
 export const AuthServiceSymbol = Symbol('AuthService');
 
-export const ProvideAuthService = (authService: AuthService) => {
+export const ProvideAuthService = (authService: AuthService | any) => {
+    if (typeof authService === 'function') {
+        return {
+            provide: AuthServiceSymbol,
+            useClass: authService,
+        };
+    }
+
     return {
         provide: AuthServiceSymbol,
         useValue: authService,

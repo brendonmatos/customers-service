@@ -14,8 +14,8 @@ import { AuthServiceKeycloak } from '../infra/auth-service.keycloak';
   controllers: [CustomerController],
   providers: [
     CustomerService, 
-    ProvideCustomerRepository(new CustomersRepositoryMock()),
-    ProvideAuthService(new AuthServiceKeycloak())
+    ProvideCustomerRepository(CustomersRepositoryMock),
+    ProvideAuthService(AuthServiceKeycloak)
   ]
 })
 export class CustomerModule {

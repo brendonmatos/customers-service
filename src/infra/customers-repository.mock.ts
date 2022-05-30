@@ -1,7 +1,9 @@
+import { Injectable } from "@nestjs/common";
 import { randomUUID } from "crypto";
 import { CustomersRepositoryInterface } from '../customer/customers-repository';
 import { Customer } from '../customer/entities/customer.entity';
 
+@Injectable()
 export class CustomersRepositoryMock implements CustomersRepositoryInterface {
 
   store: { [key: string]: Customer } = {}

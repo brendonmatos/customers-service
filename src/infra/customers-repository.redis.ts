@@ -2,7 +2,9 @@ import { Redis } from 'ioredis'
 import { randomUUID } from "crypto";
 import { CustomersRepositoryInterface } from '../customer/customers-repository';
 import { Customer } from '../customer/entities/customer.entity';
+import { Injectable } from '@nestjs/common';
 
+@Injectable()
 export class CustomersRepositoryRedis implements CustomersRepositoryInterface {
 
   constructor(public redis: Redis) { }

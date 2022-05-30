@@ -2,7 +2,15 @@ import { Inject } from "@nestjs/common";
 import { Customer } from "./entities/customer.entity";
 
 
-export const ProvideCustomerRepository = (repository: CustomersRepositoryInterface) => {
+export const ProvideCustomerRepository = (repository: CustomersRepositoryInterface | any) => {
+
+    if (typeof repository === 'function') {
+        return {
+            provide: "CustomersRepository",
+            useClass: repository,
+        };
+    }
+
     return {
         provide: "CustomersRepository",
         useValue: repository,
