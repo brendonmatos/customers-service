@@ -20,19 +20,21 @@ describe('AppController (e2e)', () => {
     await app.init();
   });
 
-  it('/ (GET)', () => {
+  it('/ (GET)', async () => {
+    const authService = app.get(AuthServiceSymbol) as AuthService
+
+    const token = await authService.getToken()
+
     return request(app.getHttpServer())
       .get('/')
+      .auth(token, { type: 'bearer' })
       .expect(200)
       .expect('Hello World!');
   });
 
   it('/customers (POST)', async () => {
-
     const authService = app.get(AuthServiceSymbol) as AuthService
-
     const token = await authService.getToken()
-
     const test = await request(app.getHttpServer())
       .post('/customers')
       .auth(token, { type: 'bearer' })
@@ -61,6 +63,7 @@ describe('AppController (e2e)', () => {
 
     const getTest = await request(app.getHttpServer())
       .get('/customers/' + createTest.body.id)
+      .auth(token, { type: 'bearer' })
 
     expect(getTest.status).toBe(200);
     expect(getTest.body).toHaveProperty('name', 'John Doe');

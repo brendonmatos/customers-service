@@ -5,7 +5,6 @@ import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
 
 @Controller('customer')
-@UseGuards(AuthGuard)
 export class CustomerController {
   constructor(private readonly customerService: CustomerService) {}
 

@@ -5,6 +5,8 @@ import { ProvideCustomerRepository } from './customers-repository';
 import { CustomersRepositoryMock } from '../customers-repository.mock';
 import { ProvideAuthService } from './auth-service';
 import { AuthServiceMock } from '../auth-service.mock';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from '../auth.guard';
 // import { CustomersRepositoryRedis } from 'src/customers-repository.redis';
 // import Redis from 'ioredis';
 // const redis = new Redis()
@@ -15,6 +17,10 @@ import { AuthServiceMock } from '../auth-service.mock';
     CustomerService, 
     ProvideCustomerRepository(new CustomersRepositoryMock()),
     ProvideAuthService(new AuthServiceMock()), 
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    }
   ]
 })
 export class CustomerModule {
