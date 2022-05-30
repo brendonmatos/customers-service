@@ -1,10 +1,6 @@
 import { Inject } from "@nestjs/common";
+import { Customer } from "./entities/customer.entity";
 
-export type Customer = {
-    id: string;
-    name: string;
-    document: string;
-}
 
 export const ProvideCustomerRepository = (repository: CustomersRepositoryInterface) => {
     return {

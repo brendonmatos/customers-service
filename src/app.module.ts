@@ -1,24 +1,23 @@
 
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import Redis from 'ioredis';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ProvideCustomerRepository } from './customers-repository';
-import { CustomersRepositoryRedis } from './customers-repository.redis';
+import { CustomerModule } from './customer/customer.module';
 
 
-const redis = new Redis()
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       expandVariables: true
-    })
+    }),
+    CustomerModule
   ],
   controllers: [AppController],
-  providers: [AppService,
-    ProvideCustomerRepository(new CustomersRepositoryRedis(redis))],
+  providers: [AppService],
 })
-export class AppModule { }
+export class AppModule { 
+
+}
