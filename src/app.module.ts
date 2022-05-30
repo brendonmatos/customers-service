@@ -1,9 +1,5 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { AuthServiceMock } from './infra/auth-service.mock';
-import { ProvideAuthService } from './customer/auth-service';
 import { CustomerModule } from './customer/customer.module';
 
 @Module({
@@ -14,9 +10,5 @@ import { CustomerModule } from './customer/customer.module';
     }),
     CustomerModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
-export class AppModule { 
-
-}
+export class AppModule {}

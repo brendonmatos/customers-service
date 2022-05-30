@@ -20,18 +20,6 @@ describe('AppController (e2e)', () => {
     await app.init();
   });
 
-  it('/ (GET)', async () => {
-    const authService = app.get(AuthServiceSymbol) as AuthService
-
-    const token = await authService.getToken()
-
-    return request(app.getHttpServer())
-      .get('/')
-      .auth(token, { type: 'bearer' })
-      .expect(200)
-      .expect('Hello World!');
-  });
-
   it('/customers (POST)', async () => {
     const authService = app.get(AuthServiceSymbol) as AuthService
     const token = await authService.getToken()
