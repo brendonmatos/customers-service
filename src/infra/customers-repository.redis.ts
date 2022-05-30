@@ -1,8 +1,7 @@
-
 import { Redis } from 'ioredis'
 import { randomUUID } from "crypto";
-import { CustomersRepositoryInterface } from './customer/customers-repository';
-import { Customer } from './customer/entities/customer.entity';
+import { CustomersRepositoryInterface } from '../customer/customers-repository';
+import { Customer } from '../customer/entities/customer.entity';
 
 export class CustomersRepositoryRedis implements CustomersRepositoryInterface {
 

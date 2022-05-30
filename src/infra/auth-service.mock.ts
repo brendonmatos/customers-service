@@ -1,4 +1,4 @@
-import { AuthService } from "./customer/auth-service";
+import { AuthService } from "../customer/auth-service";
 
 export class AuthServiceMock implements AuthService {
 

@@ -26,7 +26,11 @@
     "@nestjs/core": "^8.0.0",
     "@nestjs/mapped-types": "*",
     "@nestjs/platform-express": "^8.0.0",
+    "axios": "^0.27.2",
     "ioredis": "^5.0.5",
+    "jsonwebtoken": "^8.5.1",
+    "qs": "^6.10.3",
+    "querystring": "^0.2.1",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0"
