@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { AuthService } from "../customer/auth-service";
+import { AuthService } from "../customer/auth.service";
 
 @Injectable()
 export class AuthServiceMock implements AuthService {

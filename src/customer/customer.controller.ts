@@ -1,4 +1,5 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, UseFilters } from '@nestjs/common';
+import { HttpExceptionFilter } from '../infra/exception.filter';
 import { AuthGuard } from './auth.guard';
 import { CustomerService } from './customer.service';
 import { CreateCustomerDto } from './dto/create-customer.dto';
@@ -6,6 +7,7 @@ import { UpdateCustomerDto } from './dto/update-customer.dto';
 
 @Controller('customers')
 @UseGuards(AuthGuard)
+@UseFilters(new HttpExceptionFilter())
 export class CustomerController {
   constructor(private readonly customerService: CustomerService) { }
 

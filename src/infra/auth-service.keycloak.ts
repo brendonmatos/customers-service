@@ -1,8 +1,7 @@
 import { Injectable } from "@nestjs/common";
-import { ConfigModule, ConfigService } from "@nestjs/config";
+import { ConfigService } from "@nestjs/config";
 import Axios, { AxiosInstance } from "axios";
-import { config } from "process";
-import { AuthService } from "../customer/auth-service";
+import { AuthService } from "../customer/auth.service";
 
 
 type KeycloakIntrospectionResponse = {
@@ -25,6 +24,18 @@ type KeycloakIntrospectionResponse = {
     username:           string;
     active:             boolean;
 }
+
+export interface KeycloakCreateTokenResponse {
+    access_token:        string;
+    expires_in:          number;
+    refresh_expires_in:  number;
+    token_type:          string;
+    id_token:            string;
+    "not-before-policy": number;
+    scope:               string;
+}
+
+
 export type ResourceAccess = {
     customers: Customers;
 }
@@ -66,7 +77,7 @@ export class AuthServiceKeycloak implements AuthService {
 
     async getToken(): Promise<string> {
         const userName = this.configService.get('SSO_KEYCLOAK_USERNAME')
-        const password = Buffer.from(userName).toString('base64')
+        const password = this.configService.get('SSO_KEYCLOAK_PASSWORD')
 
         const requestParams = new URLSearchParams({
             'grant_type': 'client_credentials',
@@ -77,11 +88,9 @@ export class AuthServiceKeycloak implements AuthService {
             'scope': 'openid',
         })
 
-        const response = await this.httpClient.post('/token', requestParams, {
+        const response = await this.httpClient.post<KeycloakCreateTokenResponse>('/token', requestParams, {
             headers: { 'content-type': 'application/x-www-form-urlencoded' }
         })
-
-        console.log(response.data)
 
         const token = response.data.access_token
         return token

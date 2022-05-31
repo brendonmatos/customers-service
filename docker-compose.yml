@@ -1,0 +1,41 @@
+version: '3.7'
+
+services:
+  customer-api:
+    container_name: customer-api
+    restart: always
+    build: .
+    environment:
+      - PORT=3000
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=admin
+      - SSO_KEYCLOAK_URL=
+      - SSO_KEYCLOAK_CLIENT_ID=
+      - SSO_KEYCLOAK_CLIENT_SECRET=
+      - SSO_KEYCLOAK_USERNAME=
+      - SSO_KEYCLOAK_PASSWORD=
+    expose:
+      - '3000'
+    links:
+      - redis
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./src:/usr/src/app/src
+      - ./tests:/usr/src/app/tests
+    depends_on:
+      - redis
+    command: npm run start:dev
+  redis:
+    container_name: customers-redis
+    image: redis:6.2-alpine
+    restart: always
+    ports:
+      - '6379:6379'
+    command: redis-server --save 20 1 --loglevel warning --requirepass admin
+    volumes: 
+      - cache:/data
+volumes:
+  cache:
+    driver: local
